@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">    
+    <title>Pi Temp Monitor</title>
+    <!-- Bootstrap -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="../js/bootstrap.min.js"></script>		
+	<script language="Javascript">
+	function xmlhttpPost(strURL) {
+		var xmlHttpReq = false;
+		var self = this;		
+		// Mozilla/Safari
+		if (window.XMLHttpRequest) {
+			self.xmlHttpReq = new XMLHttpRequest();
+		}
+		// IE
+		else if (window.ActiveXObject) {
+			self.xmlHttpReq = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		self.xmlHttpReq.open('POST', strURL, true);
+		self.xmlHttpReq.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		self.xmlHttpReq.onreadystatechange = function() {
+			if (self.xmlHttpReq.readyState == 4) {
+				updatepage(self.xmlHttpReq.responseText);
+			}
+		}
+		//self.xmlHttpReq.send(getquerystring());		
+		self.xmlHttpReq.send("");
+	}
+
+	function getquerystring() {
+		var form = document.forms['f1'];
+		var word = form.word.value;	
+		qstr = 'w=' + escape(word);  // NOTE: no '?' before querystring
+		return qstr;
+	}
+
+	function updatepage(str){
+		document.getElementById("result").innerHTML = str;		
+	}
+	</script>		
+  </head>
+  <body>
+	<div class="container">
+		<div class="jumbotron">	
+		  <h1>PI MONITOR</h1>
+		  <p>Sistema di monitoraggio temperatura con utilizzo di Raspberry pi 2</p>
+		  <p><a class="btn btn-primary btn-lg" href="https://www.raspberrypi.org" target="_blank">Learn more</a></p>
+		</div>    		
+		<div class="row">
+			<div class="row">
+				<legend>Temperatura</legend>
+				<div class="col-md-4">
+					<form name="f1">
+						<div class="form-group">
+						  <label class="control-label">Temperatura rilevata:</label>
+						  <div class="input-group">
+							<span class="input-group-addon">&deg;C</span>							
+							<div id="result" class="form-control" aria-describedby="basic-addon1"></div>
+							<span class="input-group-btn">
+							  <!-- <button class="btn btn-default" type="button" onclick='JavaScript:xmlhttpPost("/cgi-bin/test/test2.py")'>Aggiorna lettura</button>-->
+							  <button class="btn btn-default" type="button" onclick='JavaScript:xmlhttpPost("/cgi-bin/ajax1/do_leggitemp_web.py")'>Aggiorna lettura</button>
+							  
+							</span>
+						  </div>
+						</div>						
+					</form>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-4">
+					<div class="progress">
+						<div class="progress-bar progress-bar-prymary" style="width: 30%">14</div>
+						<div class="progress-bar progress-bar-success" style="width: 20%">16-21</div>
+						<div class="progress-bar progress-bar-danger" style="width: 50%">24</div>
+					</div>
+				</div>
+			</div>
+			<br>			
+			<div class="row">
+				<legend>Accensione Rele'</legend>
+				<div class="col-md-12">
+					<form class="form-horizontal" action="/cgi-bin/mon/wiringpi2-mon.py" method="POST">
+					  <fieldset>
+						<div class="form-group">
+						  <label class="col-lg-2 control-label">Rele disponibili:</label>
+						  <div class="col-lg-10">
+							<div class="radio">
+							  <label>
+								<input type="radio" name="rele" id="rele1" value="rele1" >
+								Rele1
+							  </label>
+							</div>
+							<div class="radio">
+							  <label>
+								<input type="radio" name="rele" id="rele2" value="rele2">
+								Rele2
+							  </label>
+							</div>
+							<div class="radio">
+							  <label>
+								<input type="radio" name="rele" id="rele3" value="rele3">
+								Rele3
+							  </label>
+							</div>
+							<div class="radio">
+							  <label>
+								<input type="radio" name="rele" id="rele4" value="rele4">
+								Rele4
+							  </label>
+							</div>
+						  </div>
+						</div>
+						<div class="form-group">
+						  <div class="col-lg-10 col-lg-offset-2">
+							<button type="reset" class="btn btn-default">Cancel</button>
+							<button type="submit" class="btn btn-primary">Submit</button>
+						  </div>
+						</div>
+					  </fieldset>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+  </body>
+</html>

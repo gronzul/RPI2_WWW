@@ -1,0 +1,9 @@
+WATT Monitor Socket in ascolto sulla porta *.5004
+connection : { address: '::ffff:2.36.201.160', family: 'IPv6', port: 1033 }
+Clients totali connessi :  1
+connection : { address: '::ffff:2.36.201.160', family: 'IPv6', port: 1033 }
+Total clients connected :  1
+connection : { address: '::ffff:2.36.201.160', family: 'IPv6', port: 1032 }
+Clients totali connessi :  2
+Clients totali connessi :  1
+Clients totali connessi :  0

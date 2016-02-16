@@ -1,0 +1,89 @@
+<!--
+   index.html
+   
+   Copyright 2016 Giuseppe R. <gronzuladm@OTOLS002>
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<title>Button led</title>
+		<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+		<meta name="viewport" content="width=400px" />
+		<script src = "/socket.io/socket.io.js" > </script>
+		<script type=text/javascript src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+		<!-- 
+		<link rel="stylesheet" href="style.css">
+		-->
+	</head> 
+
+	<body>		
+		<input type="button" name="on" id="onButton" value="Led Verde on" onClick="ledVOn();">
+		<br>
+		<input type="button" name="on" id="onButton" value="Led Verde off" onClick="ledVOff();">
+		<br>
+		<input type="button" name="on" id="onButton" value="Led Giallo on " onClick="ledGOn();">
+		<br>
+		<input type="button" name="on" id="onButton" value="Led Giallo off " onClick="ledGOff();">
+		<br>
+		
+		<input type="range" id= "inputSlider1" min="0" max="255" value="50" step="1" oninput="showValue(this.value)" />
+		<br><span id="outputText1">50</span>
+		<br>
+		<span id="LEDCOLOR">50</span>
+
+		<script type="text/javascript">
+			var socket = io.connect();
+
+			socket.on('doled', function (led, color){
+				changeBackground(color)
+				document.getElementById("LEDCOLOR").innerHTML = led;
+				//$("body").css("background-color", data);
+				//console.log("socket doled="led + " - Colore:" + color);
+			});
+
+			socket.on('slider', function (data) {
+				document.getElementById("inputSlider1").value = data.value;
+				document.getElementById("outputText1").innerHTML = data.value;
+				//console.log("Slider 1=" + data.value);
+			});
+			
+			socket.on('disconnect', function() {
+				console.log('disconnected');
+			});
+			
+			function showValue(newValue)
+			{
+				document.getElementById("outputText1").innerHTML=newValue;
+				socket.emit("slider", { value: newValue });
+			}
+
+			function changeBackground(color) 
+			{
+				document.body.style.background = color;				
+			}
+			function ledVOn()
+			{
+				document.getElementById("LEDCOLOR").innerHTML="lv1";
+				socket.emit("doled", 'lv1','green');
+			}
+			
+			function ledVOff()
+			{
+				document.getElementById("LEDCOLOR").innerHTML="lv0";
+				socket.emit("doled", 'lv0','gray');
+			}
+			function ledGOn()
+			{
+				document.getElementById("LEDCOLOR").innerHTML="lv1";
+				socket.emit("doled", 'lg1','yellow');
+			}
+			
+			function ledGOff()
+			{
+				document.getElementById("LEDCOLOR").innerHTML="lv0";
+				socket.emit("doled", 'lg0','gray');
+			}			
+			
+		</script>
+	</body>
+</html>

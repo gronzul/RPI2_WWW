@@ -1,0 +1,120 @@
+<!--
+   chart2.html
+   
+   Copyright 2016 Giuseppe R. <gronzuladm@OTOLS002>
+   
+   <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+-->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+	<title>senza nome</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<meta name="generator" content="Geany 1.25" />
+	
+	<script src="js/jquery.min.js"></script>
+	<script src="https://code.highcharts.com/highcharts.js"></script>
+	<script src="https://code.highcharts.com/modules/exporting.js"></script>
+	<script src="https://code.highcharts.com/highcharts-more.js"></script>
+	<script src = "/socket.io/socket.io.js" > </script>
+
+</head>
+
+<body>
+	<H2>CHART2</H2>
+	<div id="container"></div>
+	<br>
+	<div id="container1"></div>
+	
+	<script type="text/javascript">
+		var socket = io.connect('http://192.168.1.20:5003');
+		var chart1;
+		var chart2;
+		var options = new Object();
+		options.chart = new Object();
+		options.chart.renderTo = 'container';
+		options.chart.type = 'areaspline';
+		
+		options.series = new Array();
+		options.series[0] = new Object();
+		options.series[0].name = 'KW';
+		
+		var options2 = new Object();
+		options2.chart = new Object();
+		options2.chart.renderTo = 'container1';
+		options2.chart.type = 'gauge';
+		
+		options2.series = new Array();
+		options2.series[0] = new Object();
+
+		/*options2.yAxis = new Object();
+		options2.yAxis.min = 20; 
+		options2.yAxis.max = 100;*/
+		
+		$(function() 
+		{
+			Highcharts.setOptions
+			({
+				chart: 
+				{
+					defaultSeriesType: 'spline',
+					events: 
+					{
+						load: getdata
+					},
+					backgroundColor: 
+					{
+						linearGradient: [0,0,500,500],
+						stops: 
+						[
+							[0,'rgb(255,255,255)'],
+							[1, 'rgb(240,240,255)']
+						]
+					},
+					borderWidth:2,
+					plotBackgroundColor: 'rgba(255,255,255,.9)',
+					plotShadow: true,
+					plotBorderWidth:1
+				},
+				xAxis: {
+					type: 'datetime',
+					tickPixelInterval: 150,
+					maxZoom: 20 * 1000
+				},				
+				yAxis: {
+					minPadding: 0.2,
+					maxPadding: 0.2,
+					title: {
+						text: 'Temperature ºC',
+						margin: 80
+					}
+				},
+				series: [{
+					name: 'Temp data',
+					data: []
+					}]
+			});
+		chart1 = new Highcharts.Chart(options);
+		chart2 = new Highcharts.Chart(options2);
+		});
+		
+		function getdata(){
+			socket.on('temperatureUpdate', function (time, data) {
+				var series = chart1.series[0];
+				series.addPoint([time, data]);
+				var series2 = chart2.series[0];
+				series2.addPoint([time, data]);
+				/*var point = chart2.series[0].points[0], newVal, inc = time;
+				newVal = data;
+				if (newVal < 20 || newVal > 100) {
+					newVal = point.y - inc;
+				}
+				point.update(newVal);*/
+			});
+		}
+		</script>
+</body>
+</html>

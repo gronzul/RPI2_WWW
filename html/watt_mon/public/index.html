@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>WATT Monitor</title>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link href="css/style.css" rel="stylesheet">
+		
+		<script src="js/jquery.min.js"></script>
+		<script src="https://code.highcharts.com/highcharts.js"></script>
+		<script src="https://code.highcharts.com/highcharts-more.js"></script>
+		<script src="https://code.highcharts.com/modules/exporting.js"></script>
+		<script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
+		<script src ="/socket.io/socket.io.js" > </script>
+		<script src="js/bootstrap.min.js"></script>
+	</head>
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="jumbotron">
+					<h2>
+						Home WATT Monitor 
+					</h2>
+					<p>
+						Progetto per monitoraggio del consumo degli utilizzatori
+					</p>
+					<p>
+						<!-- Button trigger modal -->
+						<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+						  Tenologie utilizzate
+						</button>
+						<!-- Modal -->
+						<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+						  <div class="modal-dialog" role="document">
+							<div class="modal-content">
+							  <div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+								<h4 class="modal-title" id="myModalLabel">Tenologie utilizzate</h4>
+							  </div>
+							  <div class="modal-body">
+								Per la realizzazione di questo sito web ho utilizzato le seguenti tecnologie:
+								<ul>
+									<li>
+										Boostrap
+									</li>								
+									<li>
+										Node JS
+									</li>
+									<li>
+										npm Modules
+										<ul>
+											<li>
+												Express
+											</li>									
+											<li>
+												Socket.io
+											</li>									
+											<li>
+												HihgCharts
+											</li>									
+											<li>
+												GPIO
+											</li>									
+											
+										</ul>
+									</li>
+									<li>
+										Raspberry PI2
+
+									</li>
+									<li>
+										EASTRON SDM220 Modbus
+									</li>									
+								</ul>
+							  </div>
+							  <div class="modal-footer">
+								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>								
+							  </div>
+							</div>
+						  </div>
+						</div>						
+					</p>
+				</div>
+			</div>
+		</div>		
+		<ul class="nav nav-tabs">
+		  <li class="active"><a href="#live" data-toggle="tab" aria-expanded="true">Dati Live</a></li>
+		  <li class=""><a href="#dashboard" data-toggle="tab" aria-expanded="false">Dashboard Analisi</a></li>
+		</ul>
+		<div id="myTabContent" class="tab-content">	
+			<div class="tab-pane fade active in" id="live">				
+				<div class="row">
+					<div class="col-md-3" align="center">
+						<h3 class="text-center text-info" contenteditable="true">Misurazioni e parametri LIVE</h3>
+						<table class="table table-condensed table-striped">
+							<thead>
+								<tr>
+									<th>
+										Misura
+									</th>
+									<th>
+										Valore
+									</th>
+									<th>
+										[um]
+									</th>						
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										Potenza
+									</td>
+									<td>
+										<span id="Power" class="label label-default"></span>
+									</td>
+									<td>
+										[W]
+									</td>						
+								</tr>						
+								<tr>
+									<td>
+										Tensione di rete
+									</td>
+									<td>
+										<span id="Voltage" class="label label-default"></span>
+									</td>
+									<td>
+										[V]
+									</td>						
+								</tr>
+								<tr>
+									<td>
+										Corrente
+									</td>
+									<td>
+										<span id="Current" class="label label-default"></span>
+									</td>
+									<td>
+										[A]
+									</td>						
+								</tr>
+								<tr>
+									<td>
+										Potenza Attiva Apparente
+									</td>
+									<td>
+										<span id="ActiveApparentPower" class="label label-default"></span>
+									</td>
+									<td>
+										[VA]
+									</td>						
+								</tr>
+								<tr>
+									<td>
+										Potenza Reattiva Apparente
+									</td>
+									<td>
+										<span id="ReactiveApparentPower" class="label label-default"></span>
+									</td>
+									<td>
+										[VAR]
+									</td>						
+								</tr>					
+								<tr>
+									<td>
+										Frequenza di rete
+									</td>
+									<td>
+										<span id="Frequency" class="label label-default"></span>
+									</td>
+									<td>
+										[Hz]
+									</td>						
+								</tr>
+								<tr>
+									<td>
+										Total Active Energy
+									</td>
+									<td>
+										<span id="TotalActiveEnergy" class="label label-default"></span>
+									</td>
+									<td>
+										[KW/h]
+									</td>						
+								</tr>					
+								<tr>
+									<td>
+										Total Reactive Energy
+									</td>
+									<td>
+										<span id="TotalReactiveEnergy" class="label label-default"></span>
+									</td>
+									<td>
+										[KVAR]
+									</td>						
+								</tr>					
+								
+							</tbody>
+						</table>							
+					</div>
+					<div class="col-md-9">			
+						<div id="graphAndamento" style="width:100%; height:400px;"></div>
+					</div>
+				</div>
+				<div class="row">
+				<div class="col-md-4">
+					<div id="container-Power" style="width:80%; height:200px;"></div>
+				</div>
+				<div class="col-md-4">
+					<div id="container-ActiveApparentPower" style="width:80%; height:200px;"></div>
+				</div>
+				<div class="col-md-4">
+					<div id="container-ReactiveApparentPower" style="width:80%; height:200px;"></div>
+				</div>
+			</div>		
+			</div>
+			<div class="tab-pane fade" id="dashboard">
+				DATI ANALISI
+				<button type="button" id="btn-getdbdata" class="btn btn-primary btn-lg">
+						 Json query						 
+				</button>
+				<br>	
+				<div id="graphAnalisi" style="width:100%; height:400px;"></div>
+				<br>
+				<span id="Jsondata">Jsondata</span>
+			</div>  
+		</div>			
+	</div>
+	<script src="js/scripts.js"></script>	
+</body>
+</html>

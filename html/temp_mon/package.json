@@ -1,0 +1,27 @@
+{
+  "name": "temp_mon",
+  "version": "1.0.0",
+  "description": "Monitoraggio delle temperature e attivazione rele",
+  "main": "tempmon.js",
+  "dependencies": {
+    "express": "^4.13.4",
+    "highcharts": "^4.2.1",
+    "mysql": "^2.10.2",
+    "onoff": "^1.0.4",
+    "socket.io": "^1.4.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Beppe",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gronzul/RPI2.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gronzul/RPI2/issues"
+  },
+  "homepage": "https://github.com/gronzul/RPI2"
+}

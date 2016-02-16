@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Temperature Monitor</title>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link href="css/style.css" rel="stylesheet">
+		<link href="css/bootstrap-toggle.min.css" rel="stylesheet">
+		<link href="css/bootstrap-slider.min.css" rel="stylesheet">
+			
+		<script src="js/jquery.min.js"></script>
+		<script src="https://code.highcharts.com/highcharts.js"></script>
+		<script src="https://code.highcharts.com/highcharts-more.js"></script>
+		<script src="https://code.highcharts.com/modules/exporting.js"></script>
+		<script src = "/socket.io/socket.io.js" > </script>
+		
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/bootstrap-toggle.min.js"></script>
+		<script src="js/bootstrap-slider.min.js"></script>
+	</head>
+<body>
+	<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="jumbotron">
+				<h2>
+					Home Temperature Monitor 
+				</h2>
+				<p>
+					Progetto per monitoraggio della temperatura ambiente
+				</p>
+				<p>
+					<a class="btn btn-primary btn-large" href="#">Teconologie utiizzate</a>
+				</p>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-5" align="center">
+			<ul class="nav nav-tabs">
+			  <li class="active"><a href="#live" data-toggle="tab" aria-expanded="true">Dati Live</a></li>
+			  <li class=""><a href="#settings" data-toggle="tab" aria-expanded="false">Impostazioni sonda</a></li>
+			  <li class=""><a href="#actio" data-toggle="tab" aria-expanded="false">Azioni I/O</a></li>
+			</ul>		
+			<div id="myTabContent" class="tab-content">	
+				<div class="tab-pane fade active in" id="live">				
+					<div class="row">					
+						<h3 class="text-center text-info" contenteditable="true">Misurazioni e parametri</h3>
+								<table class="table table-condensed table-striped">
+								<thead>
+									<tr>
+										<th>
+											[um]
+										</th>
+										<th>
+											Misura
+										</th>
+										<th>
+											Valore
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											#
+										</td>
+										<td>
+											Sensore  Movimento
+										</td>
+										<td>
+											<span id="interruttore" class="label label-success">NORMALE</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											[ºC]
+										</td>
+										<td>
+											Temperatura istantanea  
+										</td>
+										<td>
+											<span id="valIstante" class="label label-default"></span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											[ºC]
+										</td>
+										<td>
+											Soglia Massima
+										</td>
+										<td>
+											<span id="valfmax" class="label label-default"></span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											[ºC]
+										</td>
+										<td>
+											Soglia Superiore
+										</td>
+										<td>
+											<span id="valfhigh" class="label label-default"></span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											[ºC]
+										</td>
+										<td>
+											Solgia Inferiore
+										</td>
+										<td>
+											<span id="valflow" class="label label-default"></span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						
+					</div>
+					<div class="row">					
+						<div id="container" style="width:100%; height:300px;"></div>					
+					</div>
+				</div>
+				<div class="tab-pane fade" id="settings">
+					<h3 class="text-center text-info" contenteditable="true">Impostazioni sonda temperatura</h3>
+					<table class="table table-condensed table-striped">
+						<thead>						
+							<tr>
+								<th colspan="2">
+									Soglia
+								</th>
+								<th>
+									Valore
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>								
+								<td>
+									Soglia Massima [ºC]
+								</td>
+								<td>
+									<span id="exMaxLabel" class="label label-default"></span>
+								</td>								
+								<td>																			
+									<input id="exMax" data-slider-id='ex1Slider' type="text" data-slider-min="50" data-slider-max="100" data-slider-step="1" data-slider-value="80"/>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									Soglie Inferiore e Superiore [ºC]
+								</td>
+								<td>
+									<span id="exInfSupLabel" class="label label-default"></span>
+								</td>									
+								<td>									
+									<input id="exInfSup" type="text" class="span2" value="" data-slider-min="5" data-slider-max="50" data-slider-step="1" data-slider-value="[10,22]"/> 									
+								</td>
+							</tr>
+							<tr>								
+								<td>
+									Isteresi [ºC]
+								</td>
+								<td>
+									<span id="exHystLabel" class="label label-default"></span>
+								</td>									
+								<td>									
+									<input id="exHyst" data-slider-id='ex1Slider' type="text" data-slider-min="1" data-slider-max="10" data-slider-step="1" data-slider-value="2"/>
+								</td>
+							</tr>	
+							<tr>								
+								<td colspan="3">
+									<a class="btn btn-info btn-large  btn-block" onClick="SetSoglie();">Imposta Soglie</a>	
+								</td>
+							</tr>	
+						</tbody>
+					</table>														
+				</div>
+				<div class="tab-pane fade" id="actio">
+					<h3 class="text-center text-info" contenteditable="true">Azioni su Rele e Led</h3>					
+					<div class="row">
+						<div class="col-md-4">
+							<table class="table table-condensed table-bordered">
+								<thead>								
+									<tr>
+										<th>
+											Rele1
+										</th>
+										<th>
+											Rele2
+										</th>
+
+										<th>
+											Rele3
+										</th>
+										<th>
+											Rele4
+										</th>
+
+										<th>
+											<span id="lv" class="label label-default">Led Verde</span>
+										</th>
+										<th>
+											<span id="lg" class="label label-default">Led Giallo</span>
+										</th>							
+									</tr>							
+								</thead>
+								<tbody>									
+									<tr>
+										<td>
+											<div class="checkbox">
+												<label>
+													<input id="toggle-Rele1" 
+													data-size="large"
+													data-toggle="toggle" 
+													data-onstyle="danger"
+													type="checkbox">
+												</label>
+											</div>
+										</td>								
+										<td>
+											<div class="checkbox">
+												<label>
+													<input id="toggle-Rele2" 
+													data-size="large"
+													data-toggle="toggle" 
+													data-onstyle="danger"
+													type="checkbox">
+												</label>
+											</div>
+										</td>									
+										<td>
+											<div class="checkbox">
+												<label>
+													<input id="toggle-Rele3" 
+													data-size="large"
+													data-toggle="toggle" 
+													data-onstyle="danger"
+													type="checkbox">
+												</label>
+											</div>
+										</td>									
+										<td>
+											<div class="checkbox">
+												<label>
+													<input id="toggle-Rele4" 
+													data-size="large"
+													data-toggle="toggle" 
+													data-onstyle="danger"
+													type="checkbox">
+												</label>
+											</div>
+										</td>								
+										<td>									
+											<div class="checkbox">
+												<label>
+													<input id="toggle-lv" 
+													data-size="large"
+													data-toggle="toggle" 
+													data-onstyle="danger"
+													type="checkbox">
+												</label>
+											</div>
+										</td>
+										<td>										
+											<div class="checkbox">
+												<label>
+													<input id="toggle-lg" 
+													data-size="large"
+													data-toggle="toggle" 
+													data-onstyle="danger"
+													type="checkbox">
+												</label>
+											</div>
+										</td>															
+									</tr>
+								</tbody>
+							</table>				
+							<a class="btn btn-info btn-large" onClick="PlaySound();">Play Alarm</a>					 
+						</div>
+					</div>			
+				</div>													
+			</div>
+		</div>
+		<div class="col-md-7"> 
+			<div class="row">
+				<div id="container2" style="width:100%; height:300px;"></div>
+			</div>
+		</div>			
+	</div>
+	<div class="row">
+		<div class="col-md-3">
+			<!--
+			<img class="img-rounded" alt="Bootstrap Image Preview" src="http://lorempixel.com/140/140/">			
+			INSERIRE IMMAGINE WEBCAM!
+			http://thejackalofjavascript.com/rpi-live-streaming/-->
+		</div>
+		<div class="col-md-9">
+
+		</div>
+	</div>
+</div>
+	<script src="js/scripts.js"></script>	
+</body>
+</html>

@@ -1,0 +1,29 @@
+<html>
+	<head>
+		<title>pigpio cgi</title>
+		<script Language="Javascript">
+			function set0()
+			{
+				document.location="/cgi-bin/webled-pigpio/set0.py";
+			}
+			function set1()
+			{
+				document.location="/cgi-bin/webled-pigpio/set0.py";
+			}			
+		</script>
+	</head>
+	<body>
+		<form action="/cgi-bin/webled-pigpio/set0.py" method="POST">    
+			<!--<input type="radio" name="led" value="G">Giallo<br>
+			<input type="radio" name="led" value="V">Verde<br>
+			<input type="radio" name="led" value="O">ALL Off
+			-->
+			<input type="checkbox" name="led" value="G" > Giallo <br>
+			<input type="checkbox" name="led" value="V" > Verde <br>			
+			<br>
+			<input type="submit" value="Submit">  
+			<input type="reset" value="Reset">			
+				
+		</form>
+	</body>
+</html>

@@ -1,0 +1,226 @@
+<!--
+   chart3.html
+  
+-->
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+	<title>senza nome</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<meta name="generator" content="Geany 1.25" />
+	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+	<script src="https://code.highcharts.com/highcharts.js"></script>
+	<script src="https://code.highcharts.com/highcharts-more.js"></script>
+	<script src="https://code.highcharts.com/modules/exporting.js"></script>
+	<script src = "/socket.io/socket.io.js" > </script>
+</head>
+
+<body>
+	<div id="container" style="width:100%; height:300px;"></div>
+	<br>
+	<div id="container2" style="width:100%; height:300px;"></div>
+		
+	<script type="text/javascript">
+		var socket = io.connect('http://192.168.1.20:5003');
+		var chart1;
+		var chart2;
+		$(function () 
+		{
+			$('#container').highcharts({
+			//Highcharts.setOptions({
+				chart: 
+				{
+					type: 'gauge',
+					plotBackgroundColor: null,
+					plotBackgroundImage: null,
+					plotBorderWidth: 0,
+					plotShadow: false
+					,
+					events: 
+					{
+						load: function()
+						{
+							chart1 = this;
+							getdata();
+						 }
+					}
+				},
+
+				title: {
+					text: 'Consumo WATT'
+				},
+
+				pane: {
+					startAngle: -120,
+					endAngle: 120,
+					background: [{
+						backgroundColor: {
+							linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+							stops: [
+								[0, '#FFF'],
+								[1, '#333']
+							]
+						},
+						borderWidth: 0,
+						outerRadius: '109%'
+					}, {
+						backgroundColor: {
+							linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+							stops: [
+								[0, '#333'],
+								[1, '#FFF']
+							]
+						},
+						borderWidth: 1,
+						outerRadius: '107%'
+					}, {
+						// default background
+					}, {
+						backgroundColor: '#DDD',
+						borderWidth: 0,
+						outerRadius: '105%',
+						innerRadius: '103%'
+					}]
+				},
+				// the value axis
+				yAxis: {
+					min: 20,
+					max: 70,
+
+					minorTickInterval: 'auto',
+					minorTickWidth: 1,
+					minorTickLength: 10,
+					minorTickPosition: 'inside',
+					minorTickColor: '#666',
+
+					tickPixelInterval: 30,
+					tickWidth: 2,
+					tickPosition: 'inside',
+					tickLength: 10,
+					tickColor: '#666',
+					labels: {
+						step: 2,
+						rotation: 'auto'
+					},
+					title: {
+						text: 'kW/h'
+					},
+					plotBands: [{
+						from: 20,
+						to: 45,
+						color: '#55BF3B' // green
+					}, {
+						from: 45,
+						to: 60,
+						color: '#DDDF0D' // yellow
+					}, {
+						from: 60,
+						to: 70,
+						color: '#DF5353' // red
+					}]
+				},
+
+				series: [{
+					name: 'KW',
+					data: [20],
+					tooltip: {
+						valueSuffix: ' kW/h'
+					}
+				}]
+			});
+		});
+		
+		
+		$(function () 
+		{
+		$('#container2').highcharts({
+            chart: {
+					zoomType: 'x',
+					events: 
+					{
+						load: function()
+						{
+							chart2 = this;
+							getdata();
+						 }
+					}                
+            },
+            title: {
+                text: 'Andamento consumo'
+            },
+            subtitle: {
+                text: document.ontouchstart === undefined ?
+                        'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+            },
+            xAxis: {
+                type: 'datetime'
+            },
+            yAxis: {
+                title: {
+                    text: 'Consumo [kW]'
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            plotOptions: {
+                area: {
+                    fillColor: {
+                        linearGradient: {
+                            x1: 0,
+                            y1: 0,
+                            x2: 0,
+                            y2: 1
+                        },
+                        stops: [
+                            [0, Highcharts.getOptions().colors[0]],
+                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                        ]
+                    },
+                    marker: {
+                        radius: 2
+                    },
+                    lineWidth: 1,
+                    states: {
+                        hover: {
+                            lineWidth: 1
+                        }
+                    },
+                    threshold: null
+                }
+            },
+
+            series: [{
+                type: 'area',
+                name: 'KW',
+                data: []
+            }]
+        });
+		});
+		
+		
+		
+		
+		function getdata(){
+			socket.on('temperatureUpdate', function (time, data) {
+				var chart1 = $('#container').highcharts();
+				var point = chart1.series[0].points[0], newVal, inc = time;
+				newVal = data;
+				if (newVal < 20 || newVal > 100) {
+					newVal = point.y - inc;
+				}
+				point.update(newVal);
+				
+				var chart2 = $('#container2').highcharts();
+				var series2 = chart2.series[0];
+				series2.addPoint([time, data]);
+			});
+		}
+	</script>
+</body>
+</html>
+

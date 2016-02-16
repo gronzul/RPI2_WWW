@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Temperature Monitor</title>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link href="css/style.css" rel="stylesheet">
+		<link href="css/bootstrap-toggle.min.css" rel="stylesheet">
+		
+		
+		<script src="js/jquery.min.js"></script>
+		<script src="https://code.highcharts.com/highcharts.js"></script>
+		<script src="https://code.highcharts.com/highcharts-more.js"></script>
+		<script src="https://code.highcharts.com/modules/exporting.js"></script>
+		<script src = "/socket.io/socket.io.js" > </script>
+		
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/bootstrap-toggle.min.js"></script>
+	</head>
+<body>
+	<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="jumbotron">
+				<h2>
+					Home Temperature Monitor 
+				</h2>
+				<p>
+					Progetto per monitoraggio della temperatura ambiente
+				</p>
+				<p>
+					<a class="btn btn-primary btn-large" href="#">Teconologie utiizzate</a>
+				</p>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4" align="center">
+			<h3 class="text-center text-info" contenteditable="true">Misurazioni e parametri</h3>
+			<table class="table table-condensed table-hover table-striped">
+				<thead>
+					<tr>
+						<th>
+							[um]
+						</th>
+						<th>
+							Misura
+						</th>
+						<th>
+							Valore
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							#
+						</td>
+						<td>
+							Sensore  
+						</td>
+						<td>
+							<span id="interruttore" class="label label-success">NORMALE</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							[ºC]
+						</td>
+						<td>
+							Temperatura istantanea  
+						</td>
+						<td>
+							<span id="valIstante" class="label label-default"></span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							[ºC]
+						</td>
+						<td>
+							Soglia Massima
+						</td>
+						<td>
+							<span id="valfmax" class="label label-default"></span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							[ºC]
+						</td>
+						<td>
+							Soglia Superiore
+						</td>
+						<td>
+							<span id="valfhigh" class="label label-default"></span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							[ºC]
+						</td>
+						<td>
+							Solgia Inferiore
+						</td>
+						<td>
+							<span id="valflow" class="label label-default"></span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<div id="container" style="width:100%; height:300px;"></div>
+		</div>
+		<div class="col-md-8"> 
+			<div class="row">
+				<div id="container2" style="width:100%; height:300px;"></div>
+			</div>
+			<div class="row">
+				<div class="col-md-4">
+					<table class="table table-condensed table-hover table-striped table-bordered">
+						<thead>
+							<tr>
+								<th>
+									STATO CANALE
+								</th>
+								<th>
+									AZIONE
+								</th>
+							</tr>
+						</thead>
+							<tr>
+									<td>
+										<span id="r1" class="label label-default">Rele 1</span>
+									</td>
+									<td>
+										<div class="checkbox">
+											<label>
+												<input id="toggle-Rele1" 
+												data-size="large"
+												data-toggle="toggle" 
+												data-onstyle="danger"
+												type="checkbox">
+											</label>
+										</div>
+									</td>
+									
+							</tr>
+							<tr>
+									<td>
+										<span id="r2" class="label label-default">Rele 2</span>
+									</td>
+									<td>
+										<div class="checkbox">
+											<label>
+												<input id="toggle-Rele2" 
+												data-size="large"
+												data-toggle="toggle" 
+												data-onstyle="danger"
+												type="checkbox">
+											</label>
+										</div>
+									</td>
+									
+							</tr>
+							<tr>
+									<td>
+										<span id="r3" class="label label-default">Rele 3</span>
+									</td>
+									<td>
+										<div class="checkbox">
+											<label>
+												<input id="toggle-Rele3" 
+												data-size="large"
+												data-toggle="toggle" 
+												data-onstyle="danger"
+												type="checkbox">
+											</label>
+										</div>
+									</td>
+									
+							</tr>
+							<tr>
+									<td>
+										<span id="r4" class="label label-default">Rele 4</span>
+									</td>
+									<td>
+										<div class="checkbox">
+											<label>
+												<input id="toggle-Rele4" 
+												data-size="large"
+												data-toggle="toggle" 
+												data-onstyle="danger"
+												type="checkbox">
+											</label>
+										</div>
+									</td>
+									
+							</tr>
+							<tr>
+									<td>
+										<span id="lv" class="label label-default">Led Verde</span>
+									</td>
+									<td>
+										<div class="checkbox">
+											<label>
+												<input id="toggle-lv" 
+												data-size="large"
+												data-toggle="toggle" 
+												data-onstyle="danger"
+												type="checkbox">
+											</label>
+										</div>
+									</td>
+									
+							</tr>							<tr>
+									<td>
+										<span id="lg" class="label label-default">Led Giallo</span>
+									</td>
+									<td>
+										<div class="checkbox">
+											<label>
+												<input id="toggle-lg" 
+												data-size="large"
+												data-toggle="toggle" 
+												data-onstyle="danger"
+												type="checkbox">
+											</label>
+										</div>
+									</td>
+									
+							</tr>
+
+							
+					</table>
+				
+					<!--
+					<tr>
+							<td>
+								<a class="btn btn-info btn-large" href="#" onClick="GetledStatus();">Leggi stato LED</a>
+							</td>
+							<td>
+								<span id="LEDCOLOR">.</span>
+							</td>
+					</tr>
+					
+					 <embed src="/audio/A1.mp3" autostart="false" width=1 height=1 id="sound1" enablejavascript="true">-->
+				</div>
+			</div>
+			
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-3">
+			<img class="img-rounded" alt="Bootstrap Image Preview" src="http://lorempixel.com/140/140/">
+			<!--
+			INSERIRE IMMAGINE WEBCAM!
+			http://thejackalofjavascript.com/rpi-live-streaming/-->
+		</div>
+		<div class="col-md-9">
+
+		</div>
+	</div>
+</div>
+	<script src="js/scripts.js"></script>
+</body>
+</html>
