@@ -114,6 +114,17 @@ function toggleLed(Led, stato){
 	socket.emit("doled",Led,stato );
 }
 
+socket.on('totconnessi', function (data){
+	totconnessi= data.TotConnessi;
+	document.getElementById("totconn").innerHTML = totconnessi;
+});
+
+socket.on('savetoken_response', function (data){	
+	console.log(data);	
+	document.getElementById("SaveTokenLabel").innerHTML = data;
+});
+
+
 socket.on('ledstatus', function (stato){
 	//console.log('ledstatus -' + led);	
 	idctrl = "toggle-lv";
@@ -172,7 +183,7 @@ socket.on('dopir', function (stato){
 		document.getElementById("interruttore").innerHTML = "NORMALE";
 		document.getElementById("interruttore").className = "label label-success";
 	}
-	//console.log('doinput -' + stato + ' - ' + colore);
+	console.log('dopir -' + stato );
 });
 
 function GetledStatus(){
@@ -188,6 +199,15 @@ function PlaySound(){
 	s.play();
 	/*GetReleStatus();	
 	GetledStatus();	*/
+}
+
+function SendNotifica(){
+	socket.emit("sendNotifica");
+}
+
+function SaveToken(){
+	data = 'dPJ5BgZftaY:APA91bFtWceEhlU3JTZIoZ0UplD7nEHbvAzt8NnbQw8YhdXWu66NF-SviSSjBkqRaDNe9vS6NfGhG6VArECizyYuUETKU4reqg-IwtHD-bm1GgbjeQWHCZCZTplnbewLv8UcaAV16qae';
+	socket.emit("savetoken", data);	
 }
 
 function httpGet(theUrl){
@@ -410,7 +430,7 @@ $('#container2').highcharts({
 					y2: 1
 				},
 				stops: [
-					[0, Highcharts.getOptions().colors[3]],
+					[0, Highcharts.getOptions().colors[4]],
 					[1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
 				]
 			},

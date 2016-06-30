@@ -14,6 +14,8 @@
 		<script src="https://code.highcharts.com/highcharts-more.js"></script>
 		<script src="https://code.highcharts.com/modules/exporting.js"></script>
 		<script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
+		<script src="https://code.highcharts.com/modules/data.js"></script>
+		<script src="https://code.highcharts.com/modules/drilldown.js"></script>						
 		<script src ="/socket.io/socket.io.js" > </script>
 		<script src="js/bootstrap.min.js"></script>
 	</head>
@@ -168,6 +170,28 @@
 								</tr>					
 								<tr>
 									<td>
+										Power Factor
+									</td>
+									<td>
+										<span id="PowerFactor" class="label label-default"></span>
+									</td>
+									<td>
+										[cos(φ)]
+									</td>						
+								</tr>
+								<tr>
+									<td>
+										Phase Angle
+									</td>
+									<td>
+										<span id="PhaseAngle" class="label label-default"></span>
+									</td>
+									<td>
+										[gradi]
+									</td>						
+								</tr>
+								<tr>
+									<td>
 										Frequenza di rete
 									</td>
 									<td>
@@ -224,8 +248,8 @@
 				<button type="button" id="btn-getdbdata" class="btn btn-primary btn-lg">
 						 Json query						 
 				</button>
-				<br>	
-				<div id="graphAnalisi" style="width:100%; height:400px;"></div>
+				<br>					
+				<div id="graphAnalisi2" style="width:100%; height:400px;"></div>
 				<br>
 				<span id="Jsondata">Jsondata</span>
 			</div>  
